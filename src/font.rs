@@ -135,14 +135,6 @@ impl ffi::hb_font_t {
         if r != 0 { Some((x, y)) } else { None }
     }
 
-    pub fn glyph_h_kerning(&mut self, left: Codepoint, right: Codepoint) -> Position {
-        unsafe { ffi::hb_font_get_glyph_h_kerning(self, left, right) }
-    }
-
-    pub fn glyph_v_kerning(&mut self, top: Codepoint, bottom: Codepoint) -> Position {
-        unsafe { ffi::hb_font_get_glyph_v_kerning(self, top, bottom) }
-    }
-
     pub fn glyph_extents(&mut self, glyph: Codepoint) -> Option<GlyphExtents> {
         let mut extents = Default::default();
         let r = unsafe {
@@ -235,21 +227,6 @@ impl ffi::hb_font_t {
         unsafe {
             ffi::hb_font_subtract_glyph_origin_for_direction(
                 self, glyph, direction, &mut x, &mut y);
-        }
-        (x, y)
-    }
-
-    pub fn glyph_kerning_for_direction(
-        &mut self,
-        first: Codepoint,
-        second: Codepoint,
-        direction: Direction,
-    ) -> (Position, Position) {
-        let mut x = 0;
-        let mut y = 0;
-        unsafe {
-            ffi::hb_font_get_glyph_kerning_for_direction(
-                self, first, second, direction, &mut x, &mut y);
         }
         (x, y)
     }

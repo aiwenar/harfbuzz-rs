@@ -7,7 +7,7 @@ fn main() {
         .expect("could not locate HarfBuzz");
     let version = Version::parse(&lib.version)
         .expect("HarfBuzz was found but has invalid version");
-    let req = VersionReq::parse(&">= 1.0.0, < 2.0.0").unwrap();
+    let req = VersionReq::parse(&">= 2.0.0, < 3.0.0").unwrap();
 
     if !req.matches(&version) {
         panic!("Incompatible HarfBuzz version. Found {} but we require {}", version, req);

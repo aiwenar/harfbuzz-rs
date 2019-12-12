@@ -75,6 +75,16 @@ pub type hb_font_get_variation_glyph_func_t = extern "C" fn(
     glyph: *mut hb_codepoint_t,
     user_data: *mut c_void,
 ) -> hb_bool_t;
+pub type hb_font_get_nominal_glyphs_func_t = extern "C" fn(
+    font: *mut hb_font_t,
+    font_data: *mut c_void,
+    count: c_uint,
+    first_unicode: *const hb_codepoint_t,
+    unicode_stride: c_uint,
+    first_glyph: *mut hb_codepoint_t,
+    glyph_stride: c_uint,
+    user_data: *mut c_void,
+) -> c_uint;
 pub type hb_font_get_glyph_advance_func_t = extern "C" fn(
     font: *mut hb_font_t,
     font_data: *mut c_void,
@@ -105,15 +115,6 @@ pub type hb_font_get_glyph_origin_func_t = extern "C" fn(
 ) -> hb_bool_t;
 pub type hb_font_get_glyph_h_origin_func_t = hb_font_get_glyph_origin_func_t;
 pub type hb_font_get_glyph_v_origin_func_t = hb_font_get_glyph_origin_func_t;
-pub type hb_font_get_glyph_kerning_func_t = extern "C" fn(
-    font: *mut hb_font_t,
-    font_data: *mut c_void,
-    first_glyph: hb_codepoint_t,
-    second_glyph: hb_codepoint_t,
-    user_data: *mut c_void,
-) -> hb_position_t;
-pub type hb_font_get_glyph_h_kerning_func_t = hb_font_get_glyph_kerning_func_t;
-pub type hb_font_get_glyph_v_kerning_func_t = hb_font_get_glyph_kerning_func_t;
 pub type hb_font_get_glyph_extents_func_t = extern "C" fn(
     font: *mut hb_font_t,
     font_data: *mut c_void,
@@ -233,18 +234,6 @@ extern "C" {
         user_data: *mut c_void,
         destroy: hb_destroy_func_t,
     );
-    pub fn hb_font_funcs_set_glyph_h_kerning_func(
-        funcs: *mut hb_font_funcs_t,
-        func: hb_font_get_glyph_h_kerning_func_t,
-        user_data: *mut c_void,
-        destroy: hb_destroy_func_t,
-    );
-    pub fn hb_font_funcs_set_glyph_v_kerning_func(
-        funcs: *mut hb_font_funcs_t,
-        func: hb_font_get_glyph_v_kerning_func_t,
-        user_data: *mut c_void,
-        destroy: hb_destroy_func_t,
-    );
     pub fn hb_font_funcs_set_glyph_extents_func(
         funcs: *mut hb_font_funcs_t,
         func: hb_font_get_glyph_extents_func_t,
@@ -337,18 +326,6 @@ extern "C" {
         y: *mut hb_position_t,
     ) -> hb_bool_t;
 
-    pub fn hb_font_get_glyph_h_kerning(
-        funcs: *mut hb_font_t,
-        left_glyph: hb_codepoint_t,
-        right_glyph: hb_codepoint_t,
-    ) -> hb_position_t;
-
-    pub fn hb_font_get_glyph_v_kerning(
-        funcs: *mut hb_font_t,
-        top_glyph: hb_codepoint_t,
-        bottom_glyph: hb_codepoint_t,
-    ) -> hb_position_t;
-
     pub fn hb_font_get_glyph_extents(
         funcs: *mut hb_font_t,
         glyph: hb_codepoint_t,
@@ -427,15 +404,6 @@ extern "C" {
     pub fn hb_font_subtract_glyph_origin_for_direction(
         font: *mut hb_font_t,
         glyph: hb_codepoint_t,
-        direction: hb_direction_t,
-        x: *mut hb_position_t,
-        y: *mut hb_position_t,
-    );
-
-    pub fn hb_font_get_glyph_kerning_for_direction(
-        font: *mut hb_font_t,
-        first_glyph: hb_codepoint_t,
-        second_glyph: hb_codepoint_t,
         direction: hb_direction_t,
         x: *mut hb_position_t,
         y: *mut hb_position_t,

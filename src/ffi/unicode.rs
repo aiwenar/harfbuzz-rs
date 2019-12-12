@@ -133,11 +133,6 @@ pub type hb_unicode_combining_class_func_t = extern "C" fn(
     codepoint: hb_codepoint_t,
     user_data: *mut c_void,
 ) -> hb_unicode_combining_class_t;
-pub type hb_unicode_eastasian_width_func_t = extern "C" fn(
-    funcs: *mut hb_unicode_funcs_t,
-    codepoint: hb_codepoint_t,
-    user_data: *mut c_void,
-) -> c_uint;
 pub type hb_unicode_general_category_func_t = extern "C" fn(
     funcs: *mut hb_unicode_funcs_t,
     codepoint: hb_codepoint_t,
@@ -168,49 +163,10 @@ pub type hb_unicode_decompose_func_t = extern "C" fn(
     user_data: *mut c_void,
 ) -> hb_bool_t;
 
-/// Fully decompose `u` to its Unicode compatibility decomposition.
-/// The codepoints of the decomposition will be written to `decomposed`.
-/// The complete length of the decomposition will be returned.
-///
-/// If `u` has no compatibility decomposition, zero should be returned.
-///
-/// The Unicode standard guarantees that a buffer of length
-/// [`HB_UNICODE_MAX_DECOMPOSITION_LEN`] codepoints will always be sufficient
-/// for any compatibility decomposition plus an terminating value of 0.
-/// Consequently, `decompose` must be allocated by the caller to be at least
-/// this length.  Implementations of this function type must ensure that they
-/// do not write past the provided array.
-///
-/// Return value: number of codepoints in the full compatibility decomposition
-/// of `u`, or 0 if no decomposition available.
-///
-/// ## Arguments
-///
-/// - `ufuncs`: a Unicode function structure
-/// - `u`: codepoint to decompose
-/// - `decomposed`: address of codepoint array (of length
-///   [`HB_UNICODE_MAX_DECOMPOSITION_LEN`]) to write decomposition into
-/// - `user_data`: user data pointer as passed
-///   to [`hb_unicode_funcs_set_decompose_compatibility_func()`]
-pub type hb_unicode_decompose_compatibility_func_t = extern "C" fn(
-    funcs: &mut hb_unicode_funcs_t,
-    u: hb_codepoint_t,
-    decomposed: *mut hb_codepoint_t,
-    user_data: *mut c_void,
-) -> c_uint;
-
-pub const HB_UNICODE_MAX_DECOMPOSITION_LEN: usize = 19;
-
 extern "C" {
     pub fn hb_unicode_funcs_set_combining_class_func(
         funcs: *mut hb_unicode_funcs_t,
         func: hb_unicode_combining_class_func_t,
-        user_data: *mut c_void,
-        destroy: hb_destroy_func_t,
-    );
-    pub fn hb_unicode_funcs_set_eastasian_width_func(
-        funcs: *mut hb_unicode_funcs_t,
-        func: hb_unicode_eastasian_width_func_t,
         user_data: *mut c_void,
         destroy: hb_destroy_func_t,
     );
@@ -244,20 +200,10 @@ extern "C" {
         user_data: *mut c_void,
         destroy: hb_destroy_func_t,
     );
-    pub fn hb_unicode_funcs_set_decompose_compatibility_func(
-        funcs: *mut hb_unicode_funcs_t,
-        func: hb_unicode_decompose_compatibility_func_t,
-        user_data: *mut c_void,
-        destroy: hb_destroy_func_t,
-    );
     pub fn hb_unicode_combining_class(
         funcs: *mut hb_unicode_funcs_t,
         codepoint: hb_codepoint_t,
     ) -> hb_unicode_combining_class_t;
-    pub fn hb_unicode_eastasian_width(
-        funcs: *mut hb_unicode_funcs_t,
-        codepoint: hb_codepoint_t,
-    ) -> c_uint;
     pub fn hb_unicode_general_category(
         funcs: *mut hb_unicode_funcs_t,
         codepoint: hb_codepoint_t,
@@ -282,9 +228,4 @@ extern "C" {
         a: *mut hb_codepoint_t,
         b: *mut hb_codepoint_t,
     ) -> hb_bool_t;
-    pub fn hb_unicode_decompose_compatibility(
-        funcs: *mut hb_unicode_funcs_t,
-        u: hb_codepoint_t,
-        decomposed: *mut hb_codepoint_t
-    ) -> c_uint;
 }
